@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B1A1E9E6298EAFC500188921 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9E5298EAFC500188921 /* main.m */; };
+		B1A1E9E6298EAFC500188921 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9E5298EAFC500188921 /* main.mm */; };
+		B1A1E9EF298ED14D00188921 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9ED298ED14D00188921 /* CoreGraphics.framework */; };
+		B1A1E9F0298ED14D00188921 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9EE298ED14D00188921 /* CoreFoundation.framework */; };
+		B1A1E9F2298ED15C00188921 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9F1298ED15C00188921 /* ImageIO.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +27,10 @@
 
 /* Begin PBXFileReference section */
 		B1A1E9E2298EAFC500188921 /* fm2-objc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "fm2-objc"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1A1E9E5298EAFC500188921 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B1A1E9E5298EAFC500188921 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		B1A1E9ED298ED14D00188921 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B1A1E9EE298ED14D00188921 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		B1A1E9F1298ED15C00188921 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +38,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1A1E9F0298ED14D00188921 /* CoreFoundation.framework in Frameworks */,
+				B1A1E9EF298ED14D00188921 /* CoreGraphics.framework in Frameworks */,
+				B1A1E9F2298ED15C00188921 /* ImageIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +52,7 @@
 			children = (
 				B1A1E9E4298EAFC500188921 /* fm2-objc */,
 				B1A1E9E3298EAFC500188921 /* Products */,
+				B1A1E9EC298ED14D00188921 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +67,19 @@
 		B1A1E9E4298EAFC500188921 /* fm2-objc */ = {
 			isa = PBXGroup;
 			children = (
-				B1A1E9E5298EAFC500188921 /* main.m */,
+				B1A1E9E5298EAFC500188921 /* main.mm */,
 			);
 			path = "fm2-objc";
+			sourceTree = "<group>";
+		};
+		B1A1E9EC298ED14D00188921 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B1A1E9F1298ED15C00188921 /* ImageIO.framework */,
+				B1A1E9EE298ED14D00188921 /* CoreFoundation.framework */,
+				B1A1E9ED298ED14D00188921 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1A1E9E6298EAFC500188921 /* main.m in Sources */,
+				B1A1E9E6298EAFC500188921 /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
