@@ -20,108 +20,9 @@ using namespace simd;
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        NSArray<id <MTLDevice>> *devices = MTLCopyAllDevices();
-        id <MTLDevice> device = devices[0];
-        NSLog(@"Metal device: %@", device.name);
-        id <MTLLibrary> library = [device newDefaultLibrary];
-        id <MTLCommandQueue> queue = [device newCommandQueue];
-        NSLog(@"Metal queue: %@", queue.description);
-        NSError *error = NULL;
-        
-        // Create compute pipelines will will execute code on the GPU
-        MTLComputePipelineDescriptor *computeDescriptor = [[MTLComputePipelineDescriptor alloc] init];
 
-        // Set to YES to allow compiler to make certain optimizations
-        computeDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = YES;
+        Renderer *renderer = [[Renderer alloc] initWithMetalKitView];
         
-        // Generates rays according to view/projection matrices
-        computeDescriptor.computeFunction = [library newFunctionWithName:@"rayKernel"];
-        
-        id <MTLComputePipelineState> rayPipeline = [device newComputePipelineStateWithDescriptor:computeDescriptor
-                                                              options:0
-                                                           reflection:nil
-                                                                error:&error];
-        NSLog(@"Metal rayPipeline: %@", rayPipeline.description);
-        if (!rayPipeline)
-            NSLog(@"Failed to create pipeline state: %@", error);
-            
-        // Consumes ray/scene intersection test results to perform shading
-        computeDescriptor.computeFunction = [library newFunctionWithName:@"shadeKernel"];
-        
-        id <MTLComputePipelineState> shadePipeline = [device newComputePipelineStateWithDescriptor:computeDescriptor
-                                                              options:0
-                                                           reflection:nil
-                                                                error:&error];
-        
-        if (!shadePipeline)
-            NSLog(@"Failed to create pipeline state: %@", error);
-        
-        // Consumes shadow ray intersection tests to update the output image
-        computeDescriptor.computeFunction = [library newFunctionWithName:@"shadowKernel"];
-        
-        id <MTLComputePipelineState> shadowPipeline = [device newComputePipelineStateWithDescriptor:computeDescriptor
-                                                                 options:0
-                                                              reflection:nil
-                                                                   error:&error];
-        
-        if (!shadowPipeline)
-            NSLog(@"Failed to create pipeline state: %@", error);
-
-        // Averages the current frame's output image with all previous frames
-        computeDescriptor.computeFunction = [library newFunctionWithName:@"accumulateKernel"];
-        
-        id <MTLComputePipelineState> accumulatePipeline = [device newComputePipelineStateWithDescriptor:computeDescriptor
-                                                                     options:0
-                                                                  reflection:nil
-                                                                       error:&error];
-        
-        if (!accumulatePipeline)
-            NSLog(@"Failed to create pipeline state: %@", error);
-
-        // Copies rendered scene into the MTKView
-        MTLRenderPipelineDescriptor *renderDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-        renderDescriptor.vertexFunction = [library newFunctionWithName:@"copyVertex"];
-        renderDescriptor.fragmentFunction = [library newFunctionWithName:@"copyFragment"];
-
-        id <MTLRenderPipelineState> copyPipeline = [device newRenderPipelineStateWithDescriptor:renderDescriptor error:&error];
-        
-        if (!copyPipeline)
-            NSLog(@"Failed to create pipeline state, error %@", error);
-
-        float4x4 transform = matrix4x4_translation(0.0f, 1.0f, 0.0f) * matrix4x4_scale(0.5f, 1.98f, 0.5f);
-        
-        // Light source
-        createCube(FACE_MASK_POSITIVE_Y, vector3(1.0f, 1.0f, 1.0f), transform, true,
-                   TRIANGLE_MASK_LIGHT);
-        
-        transform = matrix4x4_translation(0.0f, 1.0f, 0.0f) * matrix4x4_scale(2.0f, 2.0f, 2.0f);
-        
-        // Top, bottom, and back walls
-        createCube(FACE_MASK_NEGATIVE_Y | FACE_MASK_POSITIVE_Y | FACE_MASK_NEGATIVE_Z, vector3(0.725f, 0.71f, 0.68f), transform, true, TRIANGLE_MASK_GEOMETRY);
-        
-        // Left wall
-        createCube(FACE_MASK_NEGATIVE_X, vector3(0.63f, 0.065f, 0.05f), transform, true,
-                   TRIANGLE_MASK_GEOMETRY);
-        
-        // Right wall
-        createCube(FACE_MASK_POSITIVE_X, vector3(0.14f, 0.45f, 0.091f), transform, true,
-                   TRIANGLE_MASK_GEOMETRY);
-        
-        transform = matrix4x4_translation(0.3275f, 0.3f, 0.3725f) *
-        matrix4x4_rotation(-0.3f, vector3(0.0f, 1.0f, 0.0f)) *
-        matrix4x4_scale(0.6f, 0.6f, 0.6f);
-        
-        // Short box
-        createCube(FACE_MASK_ALL, vector3(0.725f, 0.71f, 0.68f), transform, false,
-                   TRIANGLE_MASK_GEOMETRY);
-        
-        transform = matrix4x4_translation(-0.335f, 0.6f, -0.29f) *
-        matrix4x4_rotation(0.3f, vector3(0.0f, 1.0f, 0.0f)) *
-        matrix4x4_scale(0.6f, 1.2f, 0.6f);
-        
-        // Tall box
-        createCube(FACE_MASK_ALL, vector3(0.725f, 0.71f, 0.68f), transform, false,
-                   TRIANGLE_MASK_GEOMETRY);
         struct pixel {
             float r;
             float g;
@@ -160,7 +61,7 @@ int main(int argc, const char * argv[]) {
                       NULL,
                       false,
                       kCGRenderingIntentDefault);
-        CFURLRef path = CFURLCreateWithString(NULL, CFStringCreateWithCString(NULL, "file:/Users/rrothenb/dev/fm2-objc/blech.exr", kCFStringEncodingUTF8), NULL);
+        CFURLRef path = CFURLCreateWithString(NULL, CFStringCreateWithCString(NULL, "file:/Users/rrothenb/dev/fm2-objc/fm2-objc/blech.exr", kCFStringEncodingUTF8), NULL);
         CGImageDestinationRef myImageDest = CGImageDestinationCreateWithURL(path , CFStringCreateWithCString(NULL, "com.ilm.openexr-image", kCFStringEncodingUTF8), 1, NULL);
         CGImageDestinationAddImage(myImageDest, imageRef, nil);
         bool success = CGImageDestinationFinalize(myImageDest);

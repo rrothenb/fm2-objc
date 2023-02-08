@@ -11,7 +11,7 @@ Header for platform independent renderer class
 //   allows it to accept per-frame update and drawable resize callbacks.
 @interface Renderer : NSObject <MTKViewDelegate>
 
--(nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)view;
+-(nonnull instancetype)initWithMetalKitView;
 
 @end
 

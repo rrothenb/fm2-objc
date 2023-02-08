@@ -23,7 +23,6 @@ static const size_t intersectionStride = sizeof(MPSIntersectionDistancePrimitive
 
 @implementation Renderer
 {
-    MTKView *_view;
     id <MTLDevice> _device;
     id <MTLCommandQueue> _queue;
     id <MTLLibrary> _library;
@@ -58,17 +57,31 @@ static const size_t intersectionStride = sizeof(MPSIntersectionDistancePrimitive
     unsigned int _frameIndex;
 }
 
--(nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)view;
+-(nonnull instancetype)initWithMetalKitView
 {
     self = [super init];
 
-    if (self)
+    NSArray<id <MTLDevice>> *devices = MTLCopyAllDevices();
+    
+    id <MTLDevice> device = devices[0];
+    
+    for (id <MTLDevice> potentialDevice in devices) {
+        if (!potentialDevice.lowPower) {
+            device = potentialDevice;
+            break;
+        }
+    }
+    
+    _device = device;
+
+
+    if(!device)
     {
-        // Metal device was created by platform-specific support code. See iOS/GameViewController.m
-        // and macOS/GameViewController.m
-        _view = view;
-        _device = view.device;
-        
+        NSLog(@"Metal is not supported on this device");
+    }
+    
+   if (self)
+    {
         NSLog(@"Metal device: %@", _device.name);
 
         _sem = dispatch_semaphore_create(maxFramesInFlight);
@@ -85,11 +98,6 @@ static const size_t intersectionStride = sizeof(MPSIntersectionDistancePrimitive
 
 - (void)loadMetal
 {
-    // Configure view
-    _view.colorPixelFormat = MTLPixelFormatRGBA16Float;
-    _view.sampleCount = 1;
-    _view.drawableSize = _view.frame.size;
-
     // Create Metal shader library and command queue. Commands will be executed by GPU from this command queue.
     _library = [_device newDefaultLibrary];
     _queue = [_device newCommandQueue];
@@ -151,10 +159,8 @@ static const size_t intersectionStride = sizeof(MPSIntersectionDistancePrimitive
 
     // Copies rendered scene into the MTKView
     MTLRenderPipelineDescriptor *renderDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    renderDescriptor.sampleCount = _view.sampleCount;
     renderDescriptor.vertexFunction = [_library newFunctionWithName:@"copyVertex"];
     renderDescriptor.fragmentFunction = [_library newFunctionWithName:@"copyFragment"];
-    renderDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
 
     _copyPipeline = [_device newRenderPipelineStateWithDescriptor:renderDescriptor error:&error];
     
