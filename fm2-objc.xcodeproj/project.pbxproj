@@ -12,9 +12,6 @@
 		B1A1E9F0298ED14D00188921 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9EE298ED14D00188921 /* CoreFoundation.framework */; };
 		B1A1E9F2298ED15C00188921 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9F1298ED15C00188921 /* ImageIO.framework */; };
 		B1A1E9F4298ED86800188921 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9F3298ED86800188921 /* Metal.framework */; };
-		B1A1E9FA298F1B1600188921 /* Scene.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9F7298F1B1600188921 /* Scene.mm */; };
-		B1A1E9FB298F1B1600188921 /* Transforms.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9F8298F1B1600188921 /* Transforms.mm */; };
-		B1A1E9FC298F1B1600188921 /* Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9F9298F1B1600188921 /* Renderer.mm */; };
 		B1A1E9FE298F1B5400188921 /* MetalPerformanceShaders.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1A1E9FD298F1B5400188921 /* MetalPerformanceShaders.framework */; };
 		B1A1E9FF2992D5E900188921 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = B1A1E9F5298EE5DC00188921 /* Shaders.metal */; };
 /* End PBXBuildFile section */
@@ -39,9 +36,6 @@
 		B1A1E9F1298ED15C00188921 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		B1A1E9F3298ED86800188921 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		B1A1E9F5298EE5DC00188921 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		B1A1E9F7298F1B1600188921 /* Scene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Scene.mm; sourceTree = "<group>"; };
-		B1A1E9F8298F1B1600188921 /* Transforms.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Transforms.mm; sourceTree = "<group>"; };
-		B1A1E9F9298F1B1600188921 /* Renderer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Renderer.mm; sourceTree = "<group>"; };
 		B1A1E9FD298F1B5400188921 /* MetalPerformanceShaders.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalPerformanceShaders.framework; path = System/Library/Frameworks/MetalPerformanceShaders.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -81,9 +75,6 @@
 		B1A1E9E4298EAFC500188921 /* fm2-objc */ = {
 			isa = PBXGroup;
 			children = (
-				B1A1E9F9298F1B1600188921 /* Renderer.mm */,
-				B1A1E9F7298F1B1600188921 /* Scene.mm */,
-				B1A1E9F8298F1B1600188921 /* Transforms.mm */,
 				B1A1E9F5298EE5DC00188921 /* Shaders.metal */,
 				B1A1E9E5298EAFC500188921 /* main.mm */,
 			);
@@ -160,9 +151,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1A1E9FF2992D5E900188921 /* Shaders.metal in Sources */,
-				B1A1E9FA298F1B1600188921 /* Scene.mm in Sources */,
-				B1A1E9FB298F1B1600188921 /* Transforms.mm in Sources */,
-				B1A1E9FC298F1B1600188921 /* Renderer.mm in Sources */,
 				B1A1E9E6298EAFC500188921 /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

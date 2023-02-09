@@ -9,54 +9,50 @@
 #import <ImageIO/ImageIO.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Metal/Metal.h>
-#import "Renderer.h"
-#import "Transforms.h"
-#import "ShaderTypes.h"
-#import "Scene.h"
-#import <simd/simd.h>
-
-using namespace simd;
-
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-
-        Renderer *renderer = [[Renderer alloc] initWithMetalKitView];
         
+        NSError* error = nil;
+        id<MTLDevice> device = MTLCreateSystemDefaultDevice();
+        id<MTLLibrary> library = [device newDefaultLibrary];
+        id<MTLFunction> gradient = [library newFunctionWithName:@"gradient"];
+        id<MTLComputePipelineState> pso = [device newComputePipelineStateWithFunction: gradient error:&error];
+        id<MTLCommandQueue> commandQueue = [device newCommandQueue];
+        id<MTLBuffer> buffer = [device newBufferWithLength: 3000*3000*16 options: MTLResourceStorageModeShared];
+        id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+        id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
+        [computeEncoder setComputePipelineState:pso];
+        [computeEncoder setBuffer:buffer offset:0 atIndex:0];
+        MTLSize gridSize = MTLSizeMake(3000, 3000, 1);
+        MTLSize threadgroupSize = MTLSizeMake(pso.maxTotalThreadsPerThreadgroup, 1, 1);
+        [computeEncoder dispatchThreads:gridSize threadsPerThreadgroup:threadgroupSize];
+        [computeEncoder endEncoding];
+        [commandBuffer commit];
+        [commandBuffer waitUntilCompleted];
+
         struct pixel {
             float r;
             float g;
             float b;
+            float a;
         };
         
-        static const size_t kComponentsPerPixel = 3;
+        static const size_t kComponentsPerPixel = 4;
         static const size_t kBytesPerPixel = sizeof(pixel);
 
-        static const int height = 800;
-        static const int width = 800;
-
         CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-        
-        pixel image[height][width];
-        
-        for (int row = 0;row < height;row++) {
-            for (int col = 0;col < width;col++) {
-                image[col][row].r = 1.0*row/height;
-                image[col][row].b = 1.0*col/width;
-                image[col][row].g = 1.0*row/height*col/width;
-            }
-        }
-
-        CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, image, sizeof(image), NULL);
+                
+        CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer.contents, 3000*3000*16, NULL);
 
         CGImageRef imageRef =
-        CGImageCreate(width,
-                      height,
+        CGImageCreate(3000,
+                      3000,
                       kBytesPerPixel/kComponentsPerPixel * 8,
                       kBytesPerPixel * 8,
-                      kBytesPerPixel * width,
+                      kBytesPerPixel * 3000,
                       rgb,
-                      kCGImageAlphaNone | kCGBitmapFloatComponents | kCGBitmapByteOrder32Little,
+                      kCGImageAlphaNoneSkipLast | kCGBitmapFloatComponents | kCGBitmapByteOrder32Little,
                       provider,
                       NULL,
                       false,
